@@ -1,0 +1,37 @@
+{
+    "root": true,
+    "extends": ["@react-native-community", "plugin:prettier/recommended"],
+    "rules": {
+      "no-shadow":"off",
+      "sort-imports": "off",
+      "no-catch-shadow": "off",
+      "no-console": "error",
+      "import/order": [
+        "error",
+        {
+          "groups": ["builtin", "external", "internal"],
+          "pathGroups": [
+            {
+              "pattern": "react",
+              "group": "external",
+              "position": "before"
+            }
+          ],
+          "pathGroupsExcludedImportTypes": ["react"],
+          "newlines-between": "always",
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          }
+        }
+      ]
+    },
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "paths": ["src"]
+        }
+      }
+    },
+    "plugins": ["import"]
+  }
