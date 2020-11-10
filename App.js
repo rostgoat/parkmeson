@@ -3,6 +3,7 @@ import React from 'react'
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
+import { Map } from 'components/Map'
 const App = () => {
   return (
     <>
@@ -10,9 +11,7 @@ const App = () => {
         <KeyboardAwareScrollView
           extraHeight={200}
           contentContainerStyle={styles.appContainer__keyboardScrollView}>
-          <View>
-            <Text>Hi</Text>
-          </View>
+          <Map />
         </KeyboardAwareScrollView>
       </SafeAreaView>
     </>
