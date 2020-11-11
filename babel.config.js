@@ -18,6 +18,9 @@ module.exports = {
         ],
         alias: {
           pages: './src/pages',
+          api: './src/api',
+          data: './src/data',
+          utils: './src/utils',
           components: './src/components',
         },
       },
