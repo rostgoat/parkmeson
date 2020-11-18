@@ -14,14 +14,19 @@ const Map = ({ areas }) => {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       }}>
-      <Marker
-        coordinate={{
-          latitude: areas[0].fields.geom.coordinates[1],
-          longitude: areas[0].fields.geom.coordinates[0],
-        }}
-        title={areas[0].fields.geo_local_area}
-        description={areas[0].fields.geo_local_area}
-      />
+      {areas &&
+        areas.length > 0 &&
+        areas.map((loc) => (
+          <Marker
+            key={loc.recordid}
+            coordinate={{
+              latitude: loc.fields.geom.coordinates[1],
+              longitude: loc.fields.geom.coordinates[0],
+            }}
+            title={loc.fields.geo_local_area}
+            description={loc.fields.geo_local_area}
+          />
+        ))}
     </MapView>
   )
 }

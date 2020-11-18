@@ -11,6 +11,7 @@ import { default as availableAreas } from 'data/areas'
 
 const App = () => {
   const [areas, setAreas] = useState([])
+  const [searchVal, setSearchVal] = useState('')
   const [search, setSearch] = useState('Downtown')
   const [isLoading, setLoading] = useState(false)
 
@@ -20,22 +21,27 @@ const App = () => {
   const getAreas = useCallback(async () => {
     try {
       setLoading(true)
-      const res = await find({ area: search, rows: 100 })
+      const res = await find({
+        area: searchVal !== '' ? searchVal : 'Downtown',
+        rows: 50,
+      })
       setLoading(false)
       setAreas(res.records)
     } catch (error) {
       throw new Error(error)
     }
-  }, [search])
+  }, [searchVal])
 
   useEffect(() => {
     getAreas()
   }, [getAreas])
 
-  const newSearch = (input) => {
-    if (availableAreas.includes(input)) {
-      setSearch(input)
-    }
+  /**
+   * Callback from search component.
+   * @param {String} val search value
+   */
+  const onSearchArea = (val) => {
+    setSearchVal(val)
   }
 
   return (
@@ -49,7 +55,7 @@ const App = () => {
         {isLoading && (
           <ActivityIndicator style={styles.loading} size="large" color="#0000ff" />
         )}
-        <Search updateSearch={(value) => newSearch(value)} />
+        <Search onSearchArea={onSearchArea} />
       </SafeAreaView>
     </>
   )
