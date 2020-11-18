@@ -1,25 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { SearchBar } from 'react-native-elements'
 
-export default class App extends React.Component {
-  state = {
-    search: '',
-  }
+const Search = () => {
+  const [search, updateSearch] = useState()
 
-  updateSearch = (search) => {
-    this.setState({ search })
-  }
-
-  render() {
-    const { search } = this.state
-
-    return (
-      <SearchBar
-        placeholder="Type Here..."
-        onChangeText={this.updateSearch}
-        value={search}
-      />
-    )
-  }
+  return (
+    <SearchBar
+      placeholder="Where do you need parking?"
+      onChangeText={updateSearch}
+      value={search}
+    />
+  )
 }
+
+export default Search
