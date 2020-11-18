@@ -5,6 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { find } from 'api/meters'
 import { Map } from 'components/Map'
+import { Search } from 'components/Search'
 
 const App = () => {
   const [areas, setAreas] = useState([])
@@ -33,6 +34,7 @@ const App = () => {
           contentContainerStyle={styles.appContainer__keyboardScrollView}>
           {areas && areas.length > 0 && <Map areas={areas} />}
         </KeyboardAwareScrollView>
+        <Search />
       </SafeAreaView>
     </>
   )
