@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState } from 'react'
 
 import { SafeAreaView, StyleSheet } from 'react-native'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { ActivityIndicator } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { find } from 'api/meters'
