@@ -7,12 +7,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { find } from 'api/meters'
 import { Map } from 'components/Map'
 import { Search } from 'components/Search'
-import { default as availableAreas } from 'data/areas'
 
 const App = () => {
   const [areas, setAreas] = useState([])
   const [searchVal, setSearchVal] = useState('')
-  const [search, setSearch] = useState('Downtown')
   const [isLoading, setLoading] = useState(false)
 
   /**

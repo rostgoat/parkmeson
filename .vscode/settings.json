@@ -2,5 +2,6 @@
     "editor.formatOnPaste": false,
     "editor.codeActionsOnSave": {
       "source.fixAll": true
-    }
+    },
+    "files.eol": "\n"
   }

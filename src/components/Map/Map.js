@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View, Text, SectionList } from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
+import { Callout } from 'react-native-maps'
 
 const Map = ({ areas }) => {
   return (
@@ -22,10 +23,47 @@ const Map = ({ areas }) => {
             coordinate={{
               latitude: loc.fields.geom.coordinates[1],
               longitude: loc.fields.geom.coordinates[0],
-            }}
-            title={loc.fields.geo_local_area}
-            description={loc.fields.geo_local_area}
-          />
+            }}>
+            <Callout>
+              <View style={styles.callout}>
+                <Text>
+                  Pay by Phone: {loc.fields.pay_phone}
+                  {'\n'}
+                </Text>
+                <Text style={{ fontSize: 18 }}>Hourly Rates</Text>
+                <SectionList
+                  sections={[
+                    {
+                      title: 'Monday-Friday',
+                      data: [
+                        `9am - 6pm: ${loc.fields.r_mf_9a_6p}`,
+                        `6pm - 10pm: ${loc.fields.r_mf_6p_10}`,
+                      ],
+                    },
+                    {
+                      title: 'Saturday',
+                      data: [
+                        `9am - 6pm: ${loc.fields.r_sa_9a_6p}`,
+                        `6pm - 10pm: ${loc.fields.r_sa_6p_10}`,
+                      ],
+                    },
+                    {
+                      title: 'Sunday',
+                      data: [
+                        `9am - 6pm: ${loc.fields.r_su_9a_6p}`,
+                        `6pm - 10pm: ${loc.fields.r_su_6p_10}`,
+                      ],
+                    },
+                  ]}
+                  renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
+                  renderSectionHeader={({ section }) => (
+                    <Text style={styles.sectionHeader}>{section.title}</Text>
+                  )}
+                  keyExtractor={(item, index) => index}
+                />
+              </View>
+            </Callout>
+          </Marker>
         ))}
     </MapView>
   )
@@ -34,6 +72,18 @@ const Map = ({ areas }) => {
 const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  callout: {
+    flex: 1,
+  },
+  sectionHeader: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(247,247,247,1.0)',
+  },
+  item: {
+    padding: 3,
+    fontSize: 18,
   },
 })
 
