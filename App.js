@@ -9,22 +9,34 @@ import { Search } from 'components/Search'
 
 const App = () => {
   const [areas, setAreas] = useState([])
+  const [searchVal, setSearchVal] = useState('')
 
   /**
    * Get parking data from the API.
    */
   const getAreas = useCallback(async () => {
     try {
-      const res = await find({ area: 'Downtown', rows: 1 })
+      const res = await find({
+        area: searchVal !== '' ? searchVal : 'Downtown',
+        rows: 50,
+      })
       setAreas(res.records)
     } catch (error) {
       throw new Error(error)
     }
-  }, [])
+  }, [searchVal])
 
   useEffect(() => {
     getAreas()
   }, [getAreas])
+
+  /**
+   * Callback from search component.
+   * @param {String} val search value
+   */
+  const onSearchArea = (val) => {
+    setSearchVal(val)
+  }
 
   return (
     <>
@@ -34,7 +46,7 @@ const App = () => {
           contentContainerStyle={styles.appContainer__keyboardScrollView}>
           {areas && areas.length > 0 && <Map areas={areas} />}
         </KeyboardAwareScrollView>
-        <Search />
+        <Search onSearchArea={onSearchArea} />
       </SafeAreaView>
     </>
   )
