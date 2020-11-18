@@ -2,8 +2,13 @@ import React, { useState } from 'react'
 
 import { SearchBar } from 'react-native-elements'
 
-const Search = () => {
-  const [search, updateSearch] = useState()
+const Search = (props) => {
+  const [search, setSearch] = useState()
+
+  const updateSearch = (text) => {
+    props.updateSearch(text)
+    setSearch(text)
+  }
 
   return (
     <SearchBar
