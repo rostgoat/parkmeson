@@ -1,17 +1,104 @@
-import React from 'react'
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-native/no-inline-styles */
+import React, { useContext } from 'react'
 
+import { Button } from 'native-base'
 import { StyleSheet, View, Text, SectionList } from 'react-native'
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
-import { Callout } from 'react-native-maps'
+import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps'
+
+import { MeterContext } from '../../context/meterContext'
+import { MeterFavContext } from '../../context/meterFavContext'
 
 const Map = ({ areas }) => {
+  const [meters, setMeters] = useContext(MeterContext)
+  const [favMeters, setFavMeters] = useContext(MeterFavContext)
+
+  /**
+   * Set favorite markers data to state when marker is clicked
+   * @param {Event} e event
+   */
+  const onChooseFavorite = (e) => {
+    const { longitude, latitude } = e.nativeEvent.coordinate
+
+    let payByPhoneId
+    let chosenArea
+    areas.forEach((area) => {
+      if (area.fields.geom.coordinates[0] === longitude) {
+        payByPhoneId = area.fields.pay_phone
+        chosenArea = area.fields.geo_local_area
+      }
+    })
+
+    const foundMeter = favMeters.filter((meter) => meter.id === payByPhoneId)
+    if (foundMeter && foundMeter.length === 1) {
+      const updatedMeter = {
+        id: payByPhoneId,
+        area: chosenArea,
+      }
+
+      const tempMeters = favMeters
+      tempMeters[
+        tempMeters.findIndex((el) => el.id === updatedMeter.id)
+      ] = updatedMeter
+
+      setFavMeters((oldMeters) => [...oldMeters, ...tempMeters])
+    } else {
+      setFavMeters((oldMeters) => [
+        ...oldMeters,
+        { id: payByPhoneId, area: chosenArea },
+      ])
+    }
+  }
+  /**
+   * Add marker data to state when marker is clicked
+   * @param {Event} e event
+   */
+  const onMarkerPress = async (e) => {
+    const { longitude, latitude } = e.nativeEvent.coordinate
+
+    let payByPhoneId
+    let chosenArea
+    areas.forEach((area) => {
+      if (area.fields.geom.coordinates[0] === longitude) {
+        payByPhoneId = area.fields.pay_phone
+        chosenArea = area.fields.geo_local_area
+      }
+    })
+
+    const foundMeter = meters.filter((meter) => meter.id === payByPhoneId)
+    if (foundMeter && foundMeter.length === 1) {
+      const updatedMeter = {
+        id: payByPhoneId,
+        count: foundMeter[0].count + 1,
+        area: chosenArea,
+      }
+
+      const tempMeters = meters
+      tempMeters[
+        tempMeters.findIndex((el) => el.id === updatedMeter.id)
+      ] = updatedMeter
+
+      setMeters((oldMeters) => [...oldMeters, ...tempMeters])
+    } else {
+      setMeters((oldMeters) => [
+        ...oldMeters,
+        { id: payByPhoneId, count: 1, area: chosenArea },
+      ])
+    }
+  }
   return (
     <MapView
       provider={PROVIDER_GOOGLE}
       style={styles.map}
       initialRegion={{
-        latitude: areas[0].fields.geom.coordinates[1],
-        longitude: areas[0].fields.geom.coordinates[0],
+        latitude:
+          areas && areas.length === 0
+            ? 49.278981829564074
+            : areas[0].fields.geom.coordinates[1],
+        longitude:
+          areas && areas.length === 0
+            ? -123.11776621538205
+            : areas[0].fields.geom.coordinates[0],
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       }}>
@@ -19,12 +106,13 @@ const Map = ({ areas }) => {
         areas.length > 0 &&
         areas.map((loc) => (
           <Marker
+            onPress={(e) => onMarkerPress(e)}
             key={loc.recordid}
             coordinate={{
               latitude: loc.fields.geom.coordinates[1],
               longitude: loc.fields.geom.coordinates[0],
             }}>
-            <Callout>
+            <Callout onPress={(e) => onChooseFavorite(e)}>
               <View style={styles.callout}>
                 <Text>
                   Pay by Phone: {loc.fields.pay_phone}
@@ -61,6 +149,9 @@ const Map = ({ areas }) => {
                   )}
                   keyExtractor={(item, index) => index}
                 />
+                <Button success style={{ width: '100%', color: 'white' }}>
+                  <Text>Favorite</Text>
+                </Button>
               </View>
             </Callout>
           </Marker>

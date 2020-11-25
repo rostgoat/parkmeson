@@ -1,26 +1,29 @@
-import React, { useEffect, useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
+import { Body, Header, Title, Left, Icon, Right } from 'native-base'
 import { SafeAreaView, StyleSheet } from 'react-native'
 import { ActivityIndicator } from 'react-native'
+import { Button } from 'react-native-elements'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { find } from 'api/meters'
+import { find, findByMeter } from 'api/meters'
 import { Map } from 'components/Map'
 import { Search } from 'components/Search'
+import { Sidebar } from 'components/Sidebar'
 
-const App = () => {
+const App = ({ navigation }) => {
   const [areas, setAreas] = useState([])
-  const [searchVal, setSearchVal] = useState('')
   const [isLoading, setLoading] = useState(false)
+  const [isOpen, setOpen] = useState(false)
 
   /**
    * Get parking data from the API.
    */
-  const getAreas = useCallback(async () => {
+  const getAreas = async (val) => {
     try {
       setLoading(true)
       const res = await find({
-        area: searchVal !== '' ? searchVal : 'Downtown',
+        area: val !== '' ? val : 'Downtown',
         rows: 50,
       })
       setLoading(false)
@@ -28,32 +31,54 @@ const App = () => {
     } catch (error) {
       throw new Error(error)
     }
-  }, [searchVal])
+  }
 
-  useEffect(() => {
-    getAreas()
-  }, [getAreas])
+  const getSingleMeter = async (code) => {
+    try {
+      setLoading(true)
+      const res = await findByMeter({ code })
+      setLoading(false)
+      setAreas(res.records)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const onOpenHistorySideBar = () => {
+    setOpen(!isOpen)
+  }
 
   /**
    * Callback from search component.
    * @param {String} val search value
    */
-  const onSearchArea = (val) => {
-    setSearchVal(val)
-  }
+  const onSearchArea = (val) =>
+    typeof parseInt(val, 10) === 'number' ? getSingleMeter(val) : getAreas(val)
 
   return (
     <>
       <SafeAreaView keyboardShouldPersistTaps="handled" style={styles.body}>
+        <Header>
+          <Left>
+            <Button transparent onPress={onOpenHistorySideBar}>
+              <Icon name="menu" />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Parkmeson</Title>
+          </Body>
+          <Right />
+        </Header>
         <KeyboardAwareScrollView
           extraHeight={200}
           contentContainerStyle={styles.appContainer__keyboardScrollView}>
-          {areas && areas.length > 0 && <Map areas={areas} />}
+          <Map areas={areas} />
+          {isOpen && <Sidebar />}
         </KeyboardAwareScrollView>
         {isLoading && (
           <ActivityIndicator style={styles.loading} size="large" color="#0000ff" />
         )}
-        <Search onSearchArea={onSearchArea} />
+        {!isOpen && <Search onSearchArea={onSearchArea} />}
       </SafeAreaView>
     </>
   )
@@ -77,6 +102,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  historyToggle: {
+    zIndex: 110,
+    position: 'absolute',
+    top: 10,
+    left: 10,
   },
 })
 

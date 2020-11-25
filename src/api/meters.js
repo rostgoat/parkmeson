@@ -5,3 +5,9 @@ export const find = async ({ area, rows }) => {
     query: `&rows=${rows}&facet=geo_local_area&refine.geo_local_area=${area}`,
   })
 }
+
+export const findByMeter = async ({ code }) => {
+  return await request({
+    query: `&q=${code}`,
+  })
+}
