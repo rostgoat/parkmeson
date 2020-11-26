@@ -26,6 +26,7 @@ const App = ({ navigation }) => {
         area: val !== '' ? val : 'Downtown',
         rows: 50,
       })
+
       setLoading(false)
       setAreas(res.records)
     } catch (error) {
@@ -52,8 +53,7 @@ const App = ({ navigation }) => {
    * Callback from search component.
    * @param {String} val search value
    */
-  const onSearchArea = (val) =>
-    typeof parseInt(val, 10) === 'number' ? getSingleMeter(val) : getAreas(val)
+  const onSearchArea = (val) => (isNaN(+val) ? getAreas(val) : getSingleMeter(val))
 
   return (
     <>

@@ -17,47 +17,25 @@ const Map = ({ areas }) => {
    * Set favorite markers data to state when marker is clicked
    * @param {Event} e event
    */
-  const onChooseFavorite = (e) => {
-    const { longitude, latitude } = e.nativeEvent.coordinate
-
-    let payByPhoneId
-    let chosenArea
-    areas.forEach((area) => {
-      if (area.fields.geom.coordinates[0] === longitude) {
-        payByPhoneId = area.fields.pay_phone
-        chosenArea = area.fields.geo_local_area
-      }
-    })
-
-    const foundMeter = favMeters.filter((meter) => meter.id === payByPhoneId)
-    if (foundMeter && foundMeter.length === 1) {
-      const updatedMeter = {
-        id: payByPhoneId,
-        area: chosenArea,
-      }
-
-      const tempMeters = favMeters
-      tempMeters[
-        tempMeters.findIndex((el) => el.id === updatedMeter.id)
-      ] = updatedMeter
-
-      setFavMeters((oldMeters) => [...oldMeters, ...tempMeters])
-    } else {
-      setFavMeters((oldMeters) => [
-        ...oldMeters,
-        { id: payByPhoneId, area: chosenArea },
-      ])
-    }
-  }
+  const onChooseFavorite = (e) => updateArray(e, favMeters, setFavMeters)
   /**
    * Add marker data to state when marker is clicked
    * @param {Event} e event
    */
-  const onMarkerPress = async (e) => {
+  const onMarkerPress = (e) => updateArray(e, meters, setMeters)
+
+  /**
+   * Update some array in state.
+   * @param {Event} e event
+   * @param {Array} arr meters array
+   * @param {Function} setFunc State setter
+   */
+  const updateArray = (e, arr, setFunc) => {
     const { longitude, latitude } = e.nativeEvent.coordinate
 
     let payByPhoneId
     let chosenArea
+
     areas.forEach((area) => {
       if (area.fields.geom.coordinates[0] === longitude) {
         payByPhoneId = area.fields.pay_phone
@@ -65,22 +43,25 @@ const Map = ({ areas }) => {
       }
     })
 
-    const foundMeter = meters.filter((meter) => meter.id === payByPhoneId)
+    // find meter to update
+    const foundMeter = arr.filter((meter) => meter.id === payByPhoneId)
     if (foundMeter && foundMeter.length === 1) {
-      const updatedMeter = {
-        id: payByPhoneId,
+      // make copy of state array
+      const tempMeters = arr
+
+      // get index of item to update
+      const foundIndex = tempMeters.findIndex((el) => el.id === payByPhoneId)
+
+      // update count of item
+      tempMeters[foundIndex] = {
+        ...tempMeters[foundIndex],
         count: foundMeter[0].count + 1,
-        area: chosenArea,
       }
-
-      const tempMeters = meters
-      tempMeters[
-        tempMeters.findIndex((el) => el.id === updatedMeter.id)
-      ] = updatedMeter
-
-      setMeters((oldMeters) => [...oldMeters, ...tempMeters])
+      // update state
+      setFunc(tempMeters)
     } else {
-      setMeters((oldMeters) => [
+      // add new item to state
+      setFunc((oldMeters) => [
         ...oldMeters,
         { id: payByPhoneId, count: 1, area: chosenArea },
       ])
@@ -111,7 +92,8 @@ const Map = ({ areas }) => {
             coordinate={{
               latitude: loc.fields.geom.coordinates[1],
               longitude: loc.fields.geom.coordinates[0],
-            }}>
+            }}
+            style={{ cursor: 'pointer' }}>
             <Callout onPress={(e) => onChooseFavorite(e)}>
               <View style={styles.callout}>
                 <Text>

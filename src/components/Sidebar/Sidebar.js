@@ -6,34 +6,36 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 import { MeterContext } from '../../context/meterContext'
 import { MeterFavContext } from '../../context/meterFavContext'
 
-const MetersList = ({ meters, fav }) => (
-  <List>
-    <ListItem itemHeader first>
-      <Text>Pay By Phone</Text>
-      {fav && <Text style={styles.countText}>Visits</Text>}
-      <Text style={styles.countText}>Area</Text>
-    </ListItem>
-    {meters &&
-      meters.length > 0 &&
-      [...new Set(meters)].map((meter) => (
-        <ListItem>
-          <Text key={meter.id}>{meter.id}</Text>
-          {!fav && (
-            <Text style={styles.count} key={meter.id}>
-              {meter.count}
-            </Text>
-          )}
-          <Text style={styles.area} key={meter.id}>
-            {meter.area}
-          </Text>
-        </ListItem>
-      ))}
-  </List>
-)
+const MetersList = ({ meters, fav }) => {
+  let tempMeters = []
+  if (fav) {
+    tempMeters = meters
+  } else {
+    tempMeters = meters.sort((a, b) => a.count - b.count)
+  }
+
+  return (
+    <List>
+      <ListItem itemHeader first>
+        <Text>Pay By Phone</Text>
+        {fav && <Text style={styles.countText}>Visits</Text>}
+        <Text style={styles.countText}>Area</Text>
+      </ListItem>
+      {meters &&
+        meters.length > 0 &&
+        tempMeters.map((meter, index) => (
+          <ListItem key={index}>
+            <Text>{meter.id}</Text>
+            {fav && <Text style={styles.count}>{meter.count}</Text>}
+            <Text style={styles.area}>{meter.area}</Text>
+          </ListItem>
+        ))}
+    </List>
+  )
+}
 const Sidebar = () => {
   const [meters] = useContext(MeterContext)
   const [favMeters] = useContext(MeterFavContext)
-
   const [showFav, setShowFav] = useState(false)
   return (
     <Container style={styles.container}>
@@ -46,10 +48,10 @@ const Sidebar = () => {
         </Button>
       </View>
       <ScrollView style={styles.innerContainerMeters}>
-        {!showFav && favMeters && favMeters.length > 0 && (
+        {showFav && favMeters && favMeters.length > 0 && (
           <MetersList meters={favMeters} />
         )}
-        {showFav && meters && meters.length > 0 && (
+        {!showFav && meters && meters.length > 0 && (
           <MetersList meters={meters} fav={true} />
         )}
       </ScrollView>
