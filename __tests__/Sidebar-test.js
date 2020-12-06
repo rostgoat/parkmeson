@@ -7,11 +7,11 @@ import React from 'react'
 
 import renderer from 'react-test-renderer'
 
-import { Search } from '../src/components/Search'
+import { Sidebar } from '../src/components/Sidebar'
 
 // Note: test renderer must be required after react-native.
 
 it('renders correctly', () => {
-  const tree = renderer.create(<Search />).toJSON()
+  const tree = renderer.create(<Sidebar />).toJSON()
   expect(tree).toMatchSnapshot()
 })
