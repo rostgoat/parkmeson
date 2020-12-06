@@ -17,7 +17,7 @@
     "eslint-plugin-import": "^2.22.0",
     "ky": "^0.24.0",
     "native-base": "^2.13.14",
-    "react": "16.13.1",
+    "react": "16",
     "react-native": "0.63.3",
     "react-native-elements": "^3.0.0-alpha.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.3",
