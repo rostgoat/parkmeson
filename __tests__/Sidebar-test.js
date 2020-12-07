@@ -7,7 +7,7 @@ import React from 'react'
 
 import renderer from 'react-test-renderer'
 
-import { Sidebar } from '../src/components/Sidebar'
+import { Sidebar } from 'components/Sidebar'
 
 // Note: test renderer must be required after react-native.
 

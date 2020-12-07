@@ -15,6 +15,7 @@ module.exports = {
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-transform-react-jsx',
     '@babel/plugin-transform-runtime',
+    '@babel/plugin-transform-modules-commonjs',
     '@babel/proposal-object-rest-spread',
     [
       'module-resolver',

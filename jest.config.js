@@ -2,7 +2,7 @@ module.exports = {
   preset: 'react-native',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|react-native-button|native-base-.*|react-native-.*|react-navigation-*|@codler/react-native-keyboard-aware-scroll-view)/)',
+    'node_modules/(?!(react-native|react-native-button|native-base-.*|react-native-.*|react-navigation-*|@react-native-community/picker|@codler/react-native-keyboard-aware-scroll-view)/)',
   ],
   transform: {
     '^.+\\.js?$': 'babel-jest',
